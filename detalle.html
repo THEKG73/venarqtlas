@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle del Lugar</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .detalle-container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            font-family: sans-serif;
+            color: #333;
+        }
+        .btn-volver {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .detalle-imagen {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="detalle-container">
+        <a href="index.html" class="btn-volver">← Volver al mapa</a>
+        
+        <h1 id="punto-titulo">Cargando información...</h1>
+        <div id="punto-descripcion" style="line-height: 1.6; font-size: 16px;"></div>
+        
+        <div id="punto-imagen-container"></div>
+    </div>
+
+    <!-- Script que se encarga de buscar el punto correcto en el KML -->
+    <script>
+        // 1. Capturar el ID que viene en la URL (ej: detalle.html?id=0790DE61593AC817FF00)
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetId = urlParams.get('id');
+
+        // 2. Leer el archivo KML
+        fetch('./mis-puntos.kml')
+            .then(response => response.text())
+            .then(kmlText => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(kmlText, 'text/xml');
+                const placemarks = xmlDoc.querySelectorAll('Placemark');
+
+                let encontrado = false;
+
+                // 3. Buscar el placemark cuyo ID coincida con el de la URL
+                placemarks.forEach(placemark => {
+                    const id = placemark.getAttribute('id');
+                    
+                    if (id === targetId) {
+                        encontrado = true;
+
+                        // Extraer Nombre
+                        const nameNode = placemark.querySelector('name');
+                        const nombre = nameNode ? nameNode.textContent.trim() : "Sin título";
+                        document.getElementById('punto-titulo').textContent = nombre;
+                        document.title = nombre + " - Detalles";
+
+                        // Extraer Descripción
+                        const descNode = placemark.querySelector('description');
+                        const descText = descNode ? descNode.textContent.trim() : "";
+                        document.getElementById('punto-descripcion').innerHTML = descText;
+
+                        // Extraer Imagen del carrusel de Google Earth si existe
+                        let imageUrl = '';
+                        const allElements = placemark.getElementsByTagName('*');
+                        for (let el of allElements) {
+                            if (el.localName === 'imageUrl') {
+                                // Cambiamos el tamaño de la imagen a 800px para que se vea nítida en la página de detalles
+                                imageUrl = el.textContent.trim().replace('{size}', '800').replace(/&amp;/g, '&');
+                                break;
+                            }
+                        }
+
+                        if (imageUrl) {
+                            document.getElementById('punto-imagen-container').innerHTML = `
+                                <img src="${imageUrl}" alt="${nombre}" class="detalle-imagen" />
+                            `;
+                        }
+                    }
+                });
+
+                if (!encontrado) {
+                    document.getElementById('punto-titulo').textContent = "Lugar no encontrado";
+                    document.getElementById('punto-descripcion').innerHTML = "<p>Lo sentimos, el punto solicitado no existe o el enlace es incorrecto.</p>";
+                }
+            })
+            .catch(error => {
+                console.error("Error al cargar el archivo KML:", error);
+                document.getElementById('punto-titulo').textContent = "Error al cargar los datos";
+            });
+    </script>
+</body>
+</html>
