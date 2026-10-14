@@ -5,10 +5,21 @@ const map = L.map('map', {
     maxBoundsViscosity: 1.0
 }).setView([-0.2059, -78.4879], 13);
 
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     noWrap: true,
+    detectRetina: false,
+    //attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors &copy; <a href="https://carto.com">CARTO</a>'
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: '' // Al dejarlo vacío se elimina la sombra
+});
 
 fetch('./atlasOp.kml')
     .then(response => response.text())
