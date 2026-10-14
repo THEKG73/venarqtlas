@@ -9,7 +9,6 @@ const map = L.map('map', {
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     noWrap: true,
     detectRetina: false,
-    //attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors &copy; <a href="https://carto.com">CARTO</a>'
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
