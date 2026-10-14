@@ -10,7 +10,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-fetch('./atlas.kml')
+fetch('./atlasOp.kml')
     .then(response => response.text())
     .then(kmlText => {
         const parser = new DOMParser();
