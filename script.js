@@ -7,9 +7,6 @@ const map = L.map('map', {
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     noWrap: true,
-    updateWhenIdle: true,
-    keepBuffer: 2,
-    detectRetina: false,
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
