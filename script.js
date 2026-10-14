@@ -20,7 +20,7 @@ L.Icon.Default.mergeOptions({
     shadowUrl: '' // Al dejarlo vacío se elimina la sombra
 });
 
-fetch('./atlasOp.kml')
+fetch('./atlas.kml')
     .then(response => response.text())
     .then(kmlText => {
         const parser = new DOMParser();
