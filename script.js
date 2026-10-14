@@ -9,8 +9,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     noWrap: true,
     attribution: '&copy; OpenStreetMap contributors'
     updateWhenIdle: true,
-    keepBuffer: 2,
-    detectRetina: false
+    keepBuffer: 2
 }).addTo(map);
 
 fetch('./atlasOp.kml')
